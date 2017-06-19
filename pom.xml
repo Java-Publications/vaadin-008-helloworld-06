@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.rapidpm.vaadin</groupId>
+  <artifactId>helloworld</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+
+  <properties>
+    <maven.compiler.target>1.9</maven.compiler.target>
+    <maven.compiler.source>1.9</maven.compiler.source>
+    <vaadin.version>8.0.6</vaadin.version>
+    <undertow.version>1.4.16.Final</undertow.version>
+    <javax.servlet-api.version>3.1.0</javax.servlet-api.version>
+    <selenium.version>3.4.0</selenium.version>
+
+    <!--TDD jUnit5-->
+    <junit.version>4.12</junit.version>
+    <junit.jupiter.version>5.0.0-M4</junit.jupiter.version>
+    <junit.vintage.version>${junit.version}.0-M4</junit.vintage.version>
+    <junit.platform.version>1.0.0-M4</junit.platform.version>
+
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.vaadin</groupId>
+        <artifactId>vaadin-bom</artifactId>
+        <version>${vaadin.version}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+
+  <dependencies>
+    <!--API´s-->
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>${javax.servlet-api.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!--Infrastructure-->
+    <dependency>
+      <groupId>io.undertow</groupId>
+      <artifactId>undertow-core</artifactId>
+      <version>${undertow.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.undertow</groupId>
+      <artifactId>undertow-servlet</artifactId>
+      <version>${undertow.version}</version>
+    </dependency>
+
+    <!--Vaadin -->
+    <dependency>
+      <groupId>com.vaadin</groupId>
+      <artifactId>vaadin-server</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.vaadin</groupId>
+      <artifactId>vaadin-themes</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.vaadin</groupId>
+      <artifactId>vaadin-client-compiled</artifactId>
+    </dependency>
+
+    <!--TDD-->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!--jUnit5-->
+
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <version>${junit.jupiter.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+
+
+    <dependency>
+      <groupId>com.squareup.okhttp3</groupId>
+      <artifactId>okhttp</artifactId>
+      <version>3.8.0</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!--TDD Selenium-->
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-api</artifactId>
+      <version>${selenium.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-java</artifactId>
+      <version>${selenium.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-chrome-driver</artifactId>
+      <version>${selenium.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!--Logging-->
+  </dependencies>
+
+  <build>
+    <plugins>
+
+      <plugin>
+        <groupId>com.vaadin</groupId>
+        <artifactId>vaadin-maven-plugin</artifactId>
+        <version>${vaadin.version}</version>
+        <configuration>
+          <extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
+          <webappDirectory>${basedir}/target/classes/VAADIN/widgetsets</webappDirectory>
+          <draftCompile>false</draftCompile>
+          <compileReport>false</compileReport>
+          <style>OBF</style>
+          <strict>true</strict>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>update-theme</goal>
+              <!-- Comment out compile-theme goal to use on-the-fly theme compilation -->
+              <goal>compile-theme</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!--TDD-->
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.20</version>
+        <configuration>
+          <includes>
+            <include>**/*Test.java</include>
+          </includes>
+          <properties>
+            <!-- <includeTags>fast</includeTags> -->
+            <excludeTags>slow</excludeTags>
+          </properties>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-surefire-provider</artifactId>
+            <version>${junit.platform.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit.jupiter.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
+            <version>${junit.vintage.version}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
