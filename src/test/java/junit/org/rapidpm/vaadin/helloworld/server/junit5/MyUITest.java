@@ -16,7 +16,7 @@ import junit.org.rapidpm.vaadin.helloworld.server.junit5.selenium.WebDriverSelen
  *
  */
 
-//Order is importand top / down
+//Order is important top / down
 @ExtendWith(ServletContainerExtension.class)
 @ExtendWith(WebDriverSeleniumExtension.class)
 public class MyUITest {
