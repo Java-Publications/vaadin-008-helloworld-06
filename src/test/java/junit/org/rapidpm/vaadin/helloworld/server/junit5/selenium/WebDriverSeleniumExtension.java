@@ -1,18 +1,13 @@
 package junit.org.rapidpm.vaadin.helloworld.server.junit5.selenium;
 
-import static junit.org.rapidpm.vaadin.helloworld.server.junit5.selenium.WebDriverFunctions.newWebDriver;
-import static junit.org.rapidpm.vaadin.helloworld.server.junit5.selenium.WebDriverFunctions.takeScreenShot;
+import org.junit.jupiter.api.extension.*;
+import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
+import org.openqa.selenium.WebDriver;
 
 import java.util.function.Function;
 
-import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
-import org.junit.jupiter.api.extension.ParameterContext;
-import org.junit.jupiter.api.extension.ParameterResolutionException;
-import org.junit.jupiter.api.extension.ParameterResolver;
-import org.junit.jupiter.api.extension.TestExtensionContext;
-import org.openqa.selenium.WebDriver;
+import static junit.org.rapidpm.vaadin.helloworld.server.junit5.selenium.WebDriverFunctions.newWebDriver;
+import static junit.org.rapidpm.vaadin.helloworld.server.junit5.selenium.WebDriverFunctions.takeScreenShot;
 
 /**
  *
@@ -22,33 +17,19 @@ public class WebDriverSeleniumExtension implements ParameterResolver, AfterTestE
   static Function<ExtensionContext, Namespace> namespaceFor() {
     return (ctx) -> Namespace.create(WebDriverSeleniumExtension.class,
                                      ctx.getTestClass().get().getName(),
-                                     ctx.getTestMethod().get().getName());
+                                     ctx.getTestMethod().get().getName()
+    );
   }
 
   @Override
-  public boolean supports(ParameterContext parameterContext, ExtensionContext extensionContext)
-      throws ParameterResolutionException {
-    return parameterContext.getParameter().isAnnotationPresent(Selenium.class);
-  }
-
-  @Override
-  public Object resolve(ParameterContext parameterContext, ExtensionContext extensionContext)
-      throws ParameterResolutionException {
-    System.out.println("WebDriverSeleniumExtension.resolve ");
-    final Namespace namespace = namespaceFor().apply(extensionContext);
-    final ExtensionContext.Store store = extensionContext.getStore(namespace);
-    return store.getOrComputeIfAbsent("webdriver", key -> newWebDriver().get().get());
-  }
-
-  @Override
-  public void afterTestExecution(TestExtensionContext context) throws Exception {
+  public void afterTestExecution(ExtensionContext context) throws Exception {
     System.out.println("WebDriverSeleniumExtension.afterTestExecution ");
 
     final WebDriver webdriver = context
         .getStore(namespaceFor().apply(context))
         .get("webdriver", WebDriver.class);
 
-    context.getTestException()
+    context.getExecutionException()
            .ifPresent(e -> takeScreenShot().accept(webdriver));
 
     webdriver.close();
@@ -60,4 +41,19 @@ public class WebDriverSeleniumExtension implements ParameterResolver, AfterTestE
 
   }
 
+  @Override
+  public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext)
+      throws ParameterResolutionException {
+    return parameterContext.getParameter().isAnnotationPresent(Selenium.class);
+  }
+
+  @Override
+  public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext)
+      throws ParameterResolutionException {
+    System.out.println("WebDriverSeleniumExtension.resolve ");
+    final Namespace              namespace = namespaceFor().apply(extensionContext);
+    final ExtensionContext.Store store     = extensionContext.getStore(namespace);
+    return store.getOrComputeIfAbsent("webdriver", key -> newWebDriver().get().get());
+
+  }
 }

@@ -20,24 +20,29 @@ public class MyUI extends UI {
 
   @Override
   protected void init(VaadinRequest request) {
-    final HorizontalLayout layout = new HorizontalLayout();
-
     final TextField inputA = new TextField();
     inputA.setId(INPUT_ID_A);
+
     final TextField inputB = new TextField();
     inputB.setId(INPUT_ID_B);
 
+    final TextField output = new TextField();
+    output.setId(OUTPUT_ID);
+    output.setReadOnly(true);
+
     final Button button = new Button("click me");
     button.setId(BUTTON_ID);
-
-    final TextField output = new TextField();
-    output.setReadOnly(true);
-    output.setId(OUTPUT_ID);
-
-    layout.addComponents(inputA, new Label("+"), inputB, button, output);
-
     button.addClickListener(
-        event -> output.setValue(inputA.getValue() + inputB.getValue()));
-    setContent(layout);
+        event -> output.setValue(
+            inputA.getValue() + inputB.getValue()));
+
+    setContent(
+        new HorizontalLayout(
+            inputA,
+            new Label("+"),
+            inputB,
+            button,
+            output
+        ));
   }
 }

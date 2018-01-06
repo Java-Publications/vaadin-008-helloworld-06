@@ -20,6 +20,7 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import junit.org.rapidpm.vaadin.helloworld.server.junit5.vaadin.HasWebDriver;
 
@@ -33,10 +34,9 @@ public interface WebDriverFunctions {
     return () -> {
       try {
         System.setProperty("webdriver.chrome.driver", "_data/chromedriver");
-        final DesiredCapabilities chromeCapabilities = DesiredCapabilities.chrome();
-        final ChromeDriver chromeDriver = new ChromeDriver(chromeCapabilities);
-        chromeDriver.manage().window().maximize();
-        return Optional.of(chromeDriver);
+        final ChromeOptions chromeOptions = new ChromeOptions();
+        chromeOptions.setHeadless(false);
+        return Optional.of(new ChromeDriver(chromeOptions));
       } catch (Exception e) {
         e.printStackTrace();
         return empty();
