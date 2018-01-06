@@ -39,6 +39,7 @@ public abstract class AbstractVaadinPageObject implements VaadinPageObject {
   public Function<String, WebElement> element
       = (id) -> elementFor()
       .apply(webDriver, id)
-      .orElseThrow(() -> new RuntimeException("WebElement with the ID " + id + " is not available"));
+      .orElseThrow(() -> new RuntimeException("WebElement with the ID "
+                                              + id + " is not available"));
 
 }

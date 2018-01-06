@@ -6,6 +6,7 @@ import org.openqa.selenium.WebDriver;
 
 import java.util.function.Function;
 
+import static java.lang.System.out;
 import static junit.org.rapidpm.vaadin.helloworld.server.junit5.selenium.WebDriverFunctions.newWebDriver;
 import static junit.org.rapidpm.vaadin.helloworld.server.junit5.selenium.WebDriverFunctions.takeScreenShot;
 
@@ -14,31 +15,13 @@ import static junit.org.rapidpm.vaadin.helloworld.server.junit5.selenium.WebDriv
  */
 public class WebDriverSeleniumExtension implements ParameterResolver, AfterTestExecutionCallback {
 
+  public static final String WEBDRIVER_KEY = "webdriver";
+
   static Function<ExtensionContext, Namespace> namespaceFor() {
     return (ctx) -> Namespace.create(WebDriverSeleniumExtension.class,
                                      ctx.getTestClass().get().getName(),
                                      ctx.getTestMethod().get().getName()
     );
-  }
-
-  @Override
-  public void afterTestExecution(ExtensionContext context) throws Exception {
-    System.out.println("WebDriverSeleniumExtension.afterTestExecution ");
-
-    final WebDriver webdriver = context
-        .getStore(namespaceFor().apply(context))
-        .get("webdriver", WebDriver.class);
-
-    context.getExecutionException()
-           .ifPresent(e -> takeScreenShot().accept(webdriver));
-
-    webdriver.close();
-    webdriver.quit();
-
-    context
-        .getStore(namespaceFor().apply(context))
-        .remove("webdriver");
-
   }
 
   @Override
@@ -50,10 +33,33 @@ public class WebDriverSeleniumExtension implements ParameterResolver, AfterTestE
   @Override
   public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext)
       throws ParameterResolutionException {
-    System.out.println("WebDriverSeleniumExtension.resolve ");
+    out.println("WebDriverSeleniumExtension.resolve ");
+    out.flush();
     final Namespace              namespace = namespaceFor().apply(extensionContext);
     final ExtensionContext.Store store     = extensionContext.getStore(namespace);
-    return store.getOrComputeIfAbsent("webdriver", key -> newWebDriver().get().get());
+    return store.getOrComputeIfAbsent(WEBDRIVER_KEY, key -> newWebDriver().get().get());
 
   }
+
+
+  @Override
+  public void afterTestExecution(ExtensionContext context) throws Exception {
+    out.println("WebDriverSeleniumExtension.afterTestExecution ");
+    out.flush();
+
+    final WebDriver webdriver = context
+        .getStore(namespaceFor().apply(context))
+        .get(WEBDRIVER_KEY, WebDriver.class);
+
+    context.getExecutionException()
+           .ifPresent(e -> takeScreenShot().accept(webdriver));
+
+    webdriver.close();
+    webdriver.quit();
+
+    context
+        .getStore(namespaceFor().apply(context))
+        .remove(WEBDRIVER_KEY);
+  }
+
 }

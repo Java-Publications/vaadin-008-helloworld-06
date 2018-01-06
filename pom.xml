@@ -84,7 +84,6 @@
     </dependency>
 
     <!--jUnit5-->
-
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
@@ -133,6 +132,8 @@
       <!--TDD-->
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
+        <!--don´t use this - will lead to Out of Mem Exception-->
+        <!--<version>2.20.1</version>-->
         <version>2.19.1</version>
         <configuration>
           <includes>

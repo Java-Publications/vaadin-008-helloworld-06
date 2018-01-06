@@ -12,6 +12,8 @@ import junit.org.rapidpm.vaadin.helloworld.server.junit5.selenium.Selenium;
 import junit.org.rapidpm.vaadin.helloworld.server.junit5.container.ServletContainerExtension;
 import junit.org.rapidpm.vaadin.helloworld.server.junit5.selenium.WebDriverSeleniumExtension;
 
+import static java.lang.System.out;
+
 /**
  *
  */
@@ -21,27 +23,19 @@ import junit.org.rapidpm.vaadin.helloworld.server.junit5.selenium.WebDriverSelen
 @ExtendWith(WebDriverSeleniumExtension.class)
 public class MyUITest {
 
-
-  @BeforeEach
-  void init(@Selenium WebDriver webDriver) {
-    System.out.println("MyUITest.init.webDriver = " + webDriver);
-    this.pageObject = new MyUIPageObject(webDriver);
-  }
-
-  private MyUIPageObject pageObject;
-
   @Test
   @DisplayName("My 1st Vaadin JUnit 5 test! 😎")
-  void test001(TestInfo testInfo) {
+  void test001(@Selenium WebDriver webDriver) {
 
+    final MyUIPageObject pageObject = new MyUIPageObject(webDriver);
     pageObject.loadPage();
 
     pageObject.inputA.get().sendKeys("5");
     pageObject.inputB.get().sendKeys("5");
 
-    final WebElement btn = pageObject.button.get();
-    btn.click();
+    pageObject.button.get().click();
+
     String value = pageObject.output.get().getAttribute("value");
-    Assertions.assertEquals("10", value);
+    Assertions.assertEquals("55", value);
   }
 }

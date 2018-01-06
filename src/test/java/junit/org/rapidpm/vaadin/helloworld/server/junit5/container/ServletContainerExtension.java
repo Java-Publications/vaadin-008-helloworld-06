@@ -13,16 +13,17 @@ import static java.lang.System.out;
 public class ServletContainerExtension implements BeforeEachCallback, AfterEachCallback {
 
   @Override
+  public void beforeEach(ExtensionContext extensionContext) throws Exception {
+    out.println("ServletContainerExtension.beforeEach ");
+    out.flush();
+    Main.start();
+  }
+
+  @Override
   public void afterEach(ExtensionContext extensionContext) throws Exception {
     out.println("ServletContainerExtension.afterEach ");
     out.flush();
     Main.shutdown();
   }
 
-  @Override
-  public void beforeEach(ExtensionContext extensionContext) throws Exception {
-    out.println("ServletContainerExtension.beforeEach ");
-    out.flush();
-    Main.start();
-  }
 }

@@ -1,5 +1,6 @@
 package junit.org.rapidpm.vaadin.helloworld.server.junit5.selenium;
 
+import static java.lang.System.out;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import static org.openqa.selenium.By.id;
@@ -50,13 +51,14 @@ public interface WebDriverFunctions {
 
   static Consumer<WebDriver> takeScreenShot() {
     return (webDriver) -> {
-      System.out.println("takeScreenShot !!");
-      //take Screenshot
+      out.println("takeScreenShot !!");
+      out.flush();
       ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       try {
         outputStream.write(((TakesScreenshot) webDriver).getScreenshotAs(OutputType.BYTES));
-        //write to target/screenshot-[timestamp].jpg
-        final FileOutputStream out = new FileOutputStream("target/screenshot-" + LocalDateTime.now() + ".png");
+        final FileOutputStream out = new FileOutputStream("target/screenshot-"
+                                                          + LocalDateTime.now()
+                                                          + ".png");
         out.write(outputStream.toByteArray());
         out.flush();
         out.close();
